@@ -8,10 +8,21 @@ export interface ChoiceRecord {
   at: number;
 }
 
+export interface TravelerRecord {
+  name: string;
+  title: string;
+  date: number;
+}
+
 export interface SaveData {
   version: 2;
   choices: ChoiceRecord[];
   stage: number;
+}
+
+export interface LeaderboardSaveData {
+  version: 1;
+  travelers: TravelerRecord[];
 }
 
 export interface GameEvents {

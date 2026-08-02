@@ -5,6 +5,8 @@ import { JourneyScene } from '../scenes/JourneyScene';
 import { UIScene } from '../scenes/UIScene';
 import { WaterRipplePipeline } from '../shaders/WaterRipplePipeline';
 
+import { LeaderboardScene } from '../scenes/LeaderboardScene';
+
 export const gameConfig: Phaser.Types.Core.GameConfig = {
   type: Phaser.WEBGL,
   parent: 'app',
@@ -13,11 +15,12 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
   backgroundColor: '#182a35',
   pixelArt: false,
   render: { antialias: true, roundPixels: true, powerPreference: 'high-performance' },
+  dom: { createContainer: true },
   pipeline: { WaterRipplePipeline: WaterRipplePipeline as unknown as typeof Phaser.Renderer.WebGL.WebGLPipeline },
   physics: {
     default: 'arcade',
     arcade: { gravity: { x: 0, y: 0 }, debug: false }
   },
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
-  scene: [BootScene, TitleScene, JourneyScene, UIScene]
+  scene: [BootScene, TitleScene, JourneyScene, LeaderboardScene, UIScene]
 };

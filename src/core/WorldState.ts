@@ -1,4 +1,4 @@
-import type { Choice, ChoiceRecord, SaveData } from './types';
+import type { Choice, ChoiceRecord, SaveData, TravelerRecord } from './types';
 
 const SAVE_KEY = 'personality-quiz-world-v2';
 const SETTINGS_KEY = 'personality-quiz-settings';
@@ -38,6 +38,33 @@ export class WorldState {
 
   saveSettings(): void {
     try { localStorage.setItem(SETTINGS_KEY, JSON.stringify({ music: this.musicEnabled, sfx: this.sfxEnabled })); } catch { /* ok */ }
+  }
+
+  loadLeaderboard(): TravelerRecord[] {
+    try {
+      const raw = localStorage.getItem('personality-quiz-leaderboard');
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (data && data.version === 1 && Array.isArray(data.travelers)) {
+          return data.travelers;
+        }
+      }
+    } catch { /* ignore */ }
+    
+    // Default mysterious travelers for atmosphere if local leaderboard is empty
+    return [
+      { name: 'Elias', title: 'The Seeker', date: Date.now() - 86400000 * 42 },
+      { name: 'Rowan', title: 'The Harmonizer', date: Date.now() - 86400000 * 15 },
+      { name: 'Kael', title: 'The Lone Wolf', date: Date.now() - 86400000 * 3 },
+    ];
+  }
+
+  saveToLeaderboard(name: string, title: string): void {
+    const travelers = this.loadLeaderboard();
+    travelers.unshift({ name, title, date: Date.now() });
+    try {
+      localStorage.setItem('personality-quiz-leaderboard', JSON.stringify({ version: 1, travelers }));
+    } catch { /* ignore */ }
   }
 
   toggleMusic(): boolean { this.musicEnabled = !this.musicEnabled; this.saveSettings(); return this.musicEnabled; }
