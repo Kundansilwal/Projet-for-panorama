@@ -18,14 +18,31 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     if (!enabled) this.setVelocity(0, 0);
   }
 
-  move(cursors: Phaser.Types.Input.Keyboard.CursorKeys, keys: Record<'up' | 'down' | 'left' | 'right', Phaser.Input.Keyboard.Key>): void {
+  move(cursors: Phaser.Types.Input.Keyboard.CursorKeys, keys: Record<'up' | 'down' | 'left' | 'right', Phaser.Input.Keyboard.Key>, pointer: Phaser.Input.Pointer): void {
     if (!this.controllable) return;
     let x = (cursors.left.isDown || keys.left.isDown ? -1 : 0) + (cursors.right.isDown || keys.right.isDown ? 1 : 0);
     let y = (cursors.up.isDown || keys.up.isDown ? -1 : 0) + (cursors.down.isDown || keys.down.isDown ? 1 : 0);
-    if (x !== 0 && y !== 0) { x *= Math.SQRT1_2; y *= Math.SQRT1_2; }
+
+    if (pointer.isDown) {
+      const dx = pointer.worldX - this.x;
+      const dy = pointer.worldY - this.y;
+      if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+        const len = Math.sqrt(dx * dx + dy * dy);
+        x = dx / len;
+        y = dy / len;
+      }
+    }
+
+    if (x !== 0 && y !== 0 && !pointer.isDown) { x *= Math.SQRT1_2; y *= Math.SQRT1_2; }
     this.setVelocity(x * this.speed, y * this.speed);
+    
     if (x !== 0) this.setFlipX(x < 0);
-    if (x || y) { if (this.anims.currentAnim?.key !== 'hero-run') this.play('hero-run'); }
-    else if (this.anims.currentAnim?.key !== 'hero-idle') this.play('hero-idle');
+    
+    // Play animations based on absolute movement magnitude
+    if (Math.abs(x) > 0.1 || Math.abs(y) > 0.1) {
+      if (this.anims.currentAnim?.key !== 'hero-run') this.play('hero-run');
+    } else if (this.anims.currentAnim?.key !== 'hero-idle') {
+      this.play('hero-idle');
+    }
   }
 }

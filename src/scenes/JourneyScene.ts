@@ -49,7 +49,7 @@ export class JourneyScene extends Phaser.Scene {
       eventBus.emit('personality:hide');
       return;
     }
-    this.player.move(this.cursors, this.movement);
+    this.player.move(this.cursors, this.movement, this.input.activePointer);
     
     // Boundary constraints to keep player on the path
     let py = Phaser.Math.Clamp(this.player.y, this.gatesOpen ? 215 : 230, 620);
@@ -71,12 +71,21 @@ export class JourneyScene extends Phaser.Scene {
     const camera = this.cameras.main;
     camera.setFollowOffset(Phaser.Math.Clamp(this.player.body!.velocity.x * 0.08, -18, 18), Phaser.Math.Clamp(this.player.body!.velocity.y * 0.045, -12, 12));
 
-    if (Phaser.Input.Keyboard.JustDown(this.interact)) {
+    // Handle interact via keyboard or if tapping the shrine zone directly
+    let pointerInteract = false;
+    if (this.input.activePointer.isDown && this.nearShrine()) {
+      // Check if tap was roughly on the shrine
+      const px = this.input.activePointer.worldX;
+      const py = this.input.activePointer.worldY;
+      if (Math.abs(px - 480) < 60 && Math.abs(py - 265) < 60) pointerInteract = true;
+    }
+
+    if (Phaser.Input.Keyboard.JustDown(this.interact) || pointerInteract) {
       this.audio.unlock();
       if (this.nearShrine() && !this.gatesOpen && !this.transitioning) this.openChoice();
     }
     if (!this.nearShrine() && !this.gatesOpen && !this.transitioning) this.showHint('Find the moonlit shrine ahead');
-    if (this.gatesOpen) this.showHint('Walk through a gate to make this choice yours');
+    if (this.gatesOpen) this.showHint('Walk or tap through a gate to make this choice yours');
   }
 
   private nearShrine(): boolean { return Phaser.Math.Distance.Between(this.player.x, this.player.y, 480, 265) < 88; }

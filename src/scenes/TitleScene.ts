@@ -84,9 +84,9 @@ export class TitleScene extends Phaser.Scene {
     this.createAudioToggle(520, 420, 'sfx', '◈ SFX', worldState.sfxEnabled);
 
     // Controls hint
-    const controls = this.add.text(480, 510, 'WASD / Arrows to move  ·  E to interact  ·  R to reset', {
-      fontFamily: '"Lora", Georgia, serif', fontSize: '13px', color: '#d5ead7',
-      shadow: { offsetX: 0, offsetY: 1, color: '#31505e', blur: 4, fill: true }
+    const controls = this.add.text(480, 510, 'WASD / Arrows / Tap to move  ·  E / Tap to interact  ·  R to reset', {
+      fontFamily: 'Helvetica, Arial, sans-serif', fontSize: '11px', color: '#9bbdb0',
+      letterSpacing: 2, shadow: { offsetX: 0, offsetY: 1, color: '#1a2a24', blur: 2, fill: true }
     }).setOrigin(0.5).setDepth(6).setAlpha(0);
 
     // Entrance animations
