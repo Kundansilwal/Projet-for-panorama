@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
-  private readonly speed = 220;
+  private readonly speed = 140;
   private controllable = true;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {

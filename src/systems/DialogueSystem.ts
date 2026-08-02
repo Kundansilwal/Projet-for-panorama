@@ -7,6 +7,7 @@ export class DialogueSystem {
   private speaker: Phaser.GameObjects.Text;
   private portrait: Phaser.GameObjects.Image;
   private timer?: Phaser.Time.TimerEvent;
+  private hideTimer?: Phaser.Time.TimerEvent;
   private active = '';
 
   constructor(private readonly scene: Phaser.Scene) {
@@ -24,15 +25,16 @@ export class DialogueSystem {
   }
 
   show(speaker: string, portrait: string, message: string, persistent = false): void {
-    this.timer?.remove(false); this.active = message; this.panel.setVisible(true).setAlpha(0);
+    this.timer?.remove(false); this.hideTimer?.remove(false);
+    this.active = message; this.panel.setVisible(true).setAlpha(0);
     this.portrait.setTexture(`portrait-${portrait}`); this.speaker.setText(speaker); this.line.setText('');
     this.scene.tweens.add({ targets: this.panel, alpha: 1, duration: 180 });
     let index = 0;
-    this.timer = this.scene.time.addEvent({ delay: 16, repeat: message.length - 1, callback: () => { this.line.setText(message.slice(0, ++index)); } });
-    if (!persistent) this.scene.time.delayedCall(Math.max(2600, message.length * 36), () => this.hide());
+    this.timer = this.scene.time.addEvent({ delay: 35, repeat: message.length - 1, callback: () => { this.line.setText(message.slice(0, ++index)); } });
+    if (!persistent) this.hideTimer = this.scene.time.delayedCall(Math.max(4500, message.length * 55), () => this.hide());
   }
 
   reveal(): void { if (this.active) { this.timer?.remove(false); this.line.setText(this.active); } }
-  hide(): void { this.timer?.remove(false); this.panel.setVisible(false); }
+  hide(): void { this.timer?.remove(false); this.hideTimer?.remove(false); this.panel.setVisible(false); }
   destroy(): void { this.timer?.remove(false); this.panel.destroy(); }
 }

@@ -99,16 +99,20 @@ export class JourneyScene extends Phaser.Scene {
     this.audio.playSfx('gate-choose');
     const completedStage = worldState.stage;
     eventBus.emit('choice:locked', { stage: completedStage, choice });
-    eventBus.emit('dialogue:show', { speaker: choice === 'YES' ? 'The warm gate opens' : 'The quiet gate opens', portrait: this.map.currentStage.portrait, text: choice === 'YES' ? 'Your courage becomes a small light on the path.' : 'Your boundary becomes a small shelter on the path.' });
-    this.cameras.main.fadeOut(620, 226, 239, 230);
-    this.time.delayedCall(640, () => {
-      worldState.lockChoice(choice);
-      if (worldState.complete) { this.showEnding(); return; }
-      this.audio.playSfx('transition');
-      this.player.setPosition(480, 550);
-      this.refreshStage(false);
-      this.cameras.main.fadeIn(620, 226, 239, 230);
-      this.time.delayedCall(700, () => { this.player.setControl(true); this.transitioning = false; });
+    eventBus.emit('dialogue:show', { speaker: choice === 'YES' ? 'The warm gate opens' : 'The quiet gate opens', portrait: this.map.currentStage.portrait, text: choice === 'YES' ? 'Your courage becomes a small light on the path.' : 'Your boundary becomes a small shelter on the path.', persistent: true });
+    
+    // Wait 2.5 seconds to let the player read the consequence text before fading out
+    this.time.delayedCall(2500, () => {
+      this.cameras.main.fadeOut(620, 226, 239, 230);
+      this.time.delayedCall(640, () => {
+        worldState.lockChoice(choice);
+        if (worldState.complete) { this.showEnding(); return; }
+        this.audio.playSfx('transition');
+        this.player.setPosition(480, 550);
+        this.refreshStage(false);
+        this.cameras.main.fadeIn(620, 226, 239, 230);
+        this.time.delayedCall(700, () => { this.player.setControl(true); this.transitioning = false; });
+      });
     });
   }
 
@@ -119,8 +123,12 @@ export class JourneyScene extends Phaser.Scene {
     eventBus.emit('audio:biome', { biome: stage.biome, tension: worldState.tension() });
     eventBus.emit('world:changed', { stage: worldState.stage }); eventBus.emit('hud:refresh');
     this.cameras.main.zoomTo(1.04, 460, 'Sine.easeOut');
-    if (announce) eventBus.emit('dialogue:show', { speaker: 'The mountain remembers', portrait: stage.portrait, text: `Your journey returns to ${stage.title}.` });
-    else eventBus.emit('dialogue:show', { speaker: stage.guardian, portrait: stage.portrait, text: `Stage ${stage.id} — ${stage.title}. The path is waiting.` });
+    if (announce) {
+      eventBus.emit('dialogue:show', { speaker: 'The mountain remembers', portrait: stage.portrait, text: `Your journey returns to ${stage.title}.` });
+    } else {
+      // Show stage title first, then the description about what the stage signifies
+      eventBus.emit('dialogue:show', { speaker: `Stage ${stage.id}  ·  ${stage.title}`, portrait: stage.portrait, text: stage.description });
+    }
   }
 
   private showEnding(): void {
