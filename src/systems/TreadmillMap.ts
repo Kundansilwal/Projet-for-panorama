@@ -117,7 +117,7 @@ export class TreadmillMap {
     this.shrine.setTint(palette.shrineTint).setAlpha(0.88 + this.state.echo().warmth * 0.12);
     this.shrineZone.setPosition(480, 265);
     this.gates.forEach((gate) => {
-      gate.label.setText(gate.choice === 'YES' ? `YES\n${stage.yesLabel}` : `NO\n${stage.noLabel}`);
+      gate.label.setText(gate.choice === 'YES' ? stage.yesLabel : stage.noLabel);
       gate.sprite.setPosition(gate.choice === 'YES' ? 280 : 680, 218);
       gate.zone.setPosition(gate.sprite.x, gate.sprite.y);
       gate.label.setPosition(gate.sprite.x, 268);

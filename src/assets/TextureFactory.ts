@@ -48,8 +48,8 @@ export class TextureFactory {
       g.fillStyle(0xffffff, 0.66).fillCircle(44, 31, 4);
       g.lineStyle(2, 0x3d4355).strokeRoundedRect(25, 55, 46, 25, 6);
     });
-    paint('gate-yes', 132, 110, (g) => this.gate(g, 0x73c5a0, 0xd9f0b6, true));
-    paint('gate-no', 132, 110, (g) => this.gate(g, 0x9f6987, 0xf0b1a3, false));
+    paint('gate-yes', 132, 110, (g) => this.gate(g, 0x56606b, 0x93a3af, true));
+    paint('gate-no', 132, 110, (g) => this.gate(g, 0x56606b, 0x93a3af, false));
     paint('tree', 78, 118, (g) => {
       g.fillStyle(0x283344, 0.25).fillEllipse(40, 110, 55, 10);
       g.fillStyle(0x543e36).fillRoundedRect(34, 56, 13, 52, 4);
