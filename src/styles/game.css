@@ -1,0 +1,89 @@
+:root {
+  color-scheme: dark;
+  --bg-color: #0b1118;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  display: grid;
+  place-items: center;
+  font-family: 'Lora', Georgia, 'Times New Roman', serif;
+  background-color: var(--bg-color);
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(49, 89, 106, 0.5), transparent 45%),
+    radial-gradient(circle at 85% 30%, rgba(20, 40, 60, 0.7), transparent 45%),
+    radial-gradient(circle at 50% 80%, rgba(60, 100, 120, 0.35), transparent 50%);
+  background-size: 200% 200%;
+  animation: bg-drift 20s ease-in-out infinite alternate;
+}
+
+@keyframes bg-drift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 50% 100%; }
+}
+
+#vignette {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, transparent 40%, rgba(3, 7, 12, 0.85) 100%);
+  z-index: 50;
+  mix-blend-mode: multiply;
+}
+
+#ambient-glow {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 960px;
+  height: 640px;
+  background: radial-gradient(circle, rgba(136, 200, 177, 0.12) 0%, transparent 65%);
+  border-radius: 50%;
+  z-index: 1;
+  filter: blur(50px);
+  animation: pulse-glow 6s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-glow {
+  0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.95); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+}
+
+#app {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+canvas {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  box-shadow: 
+    0 30px 90px rgba(0, 0, 0, 0.8), 
+    0 0 0 1px rgba(244, 220, 166, 0.15),
+    0 0 70px rgba(136, 200, 177, 0.2),
+    inset 0 0 25px rgba(255, 255, 255, 0.03);
+  transform: translateY(0);
+  animation: canvas-float 8s ease-in-out infinite alternate;
+}
+
+@keyframes canvas-float {
+  0% { transform: translateY(0px); box-shadow: 0 30px 90px rgba(0,0,0,0.8), 0 0 0 1px rgba(244, 220, 166, 0.15), 0 0 70px rgba(136, 200, 177, 0.2); }
+  100% { transform: translateY(-10px); box-shadow: 0 40px 100px rgba(0,0,0,0.9), 0 0 0 1px rgba(244, 220, 166, 0.25), 0 0 90px rgba(136, 200, 177, 0.3); }
+}
